@@ -116,6 +116,8 @@
                 <button id="close-toolbar-btn">Hide toolbar</button>
                 <button id="toc-menu-btn">ToC Dropdown menu</button>
                 <button id="toc-default-btn">ToC default</button>
+                <button id="default-theme">Default Theme</button>
+                <button id="dark-theme">Dark Theme</button>
             </div>
             <div id="test-editormd"></div>
         </div>
@@ -224,6 +226,16 @@
                 
                 $("#toc-default-btn").click(function() {
                     testEditor.config("tocDropdown", false);
+                });
+
+                $('#default-theme').click(function() {
+                    testEditor.setEditorTheme('default');
+                    testEditor.setPreviewTheme('default');
+                });
+
+                $('#dark-theme').click(function() {
+                    testEditor.setEditorTheme('pastel-on-dark');
+                    testEditor.setPreviewTheme('dark');
                 });
             });
         </script>
