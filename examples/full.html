@@ -7,92 +7,12 @@
         <link rel="stylesheet" href="../css/editormd.css" />   
         <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
         <style>            
-            /*.editormd-preview-theme-dark {
-                color: #777;
-                background:#2C2827;
-            }
             
-            .editormd-preview-theme-dark .editormd-toc-menu > .markdown-toc {
-                background:#fff;
-                border:none;
-            }
-            
-            .editormd-preview-theme-dark .editormd-toc-menu > .markdown-toc h1{
-                border-color:#ddd;
-            }
-            
-            .editormd-preview-theme-dark .markdown-body h1,
-            .editormd-preview-theme-dark .markdown-body h2,
-            .editormd-preview-theme-dark .markdown-body hr {
-                border-color: #222;
-            }
-            
-            .editormd-preview-theme-dark .editormd-preview-container  blockquote {
-                color: #555;
-                border-color: #333;
-                background: #222;
-                padding: 0.5em;
-            }
-            
-            .editormd-preview-theme-dark .editormd-preview-container abbr {
-                background:#ff9900;
-                color: #fff;
-                padding: 1px 3px;
-                border-radius: 3px; 
-            }
-            
-            .editormd-preview-theme-dark .editormd-preview-container code {
-                background: #5A9600;
-                color: #fff;
-                border: none;
-                padding: 1px 3px;
-                border-radius: 3px; 
-            }
-            
-            .editormd-preview-theme-dark .editormd-preview-container table {
-                border: none;
-            }
-            
-            .editormd-preview-theme-dark .editormd-preview-container .fa-emoji {
-                color: #B4BF42;
-            }
-            
-            .editormd-preview-theme-dark .editormd-preview-container .katex {
-                color: #FEC93F;
-            }
-            
-            .editormd-preview-theme-dark [class*=editormd-logo] {
-                color: #2196F3;
-            }
-            
-            .editormd-preview-theme-dark .sequence-diagram text {
-                fill: #fff;
-            }
-            
-            .editormd-preview-theme-dark .sequence-diagram rect, 
-            .editormd-preview-theme-dark .sequence-diagram path {
-                color:#fff;
-                fill : #64D1CB;
-                stroke : #64D1CB;
-            }
-            
-            .editormd-preview-theme-dark .flowchart rect, 
-            .editormd-preview-theme-dark .flowchart path {
-                stroke : #A6C6FF;
-            }
-            
-            .editormd-preview-theme-dark .flowchart rect {
-                fill: #A6C6FF;
-            }
-            
-            .editormd-preview-theme-dark .flowchart text {
-                fill: #5879B4;
-            }*/
         </style>     
     </head>
     <body>
         <div id="layout">
-            <header>
+            <!-- <header>
                 <h1>完整示例</h1>
                 <p>Full example</p>
                 <ul style="margin: 10px 0 0 18px;">
@@ -101,7 +21,9 @@
                     <li>Enable Image upload</li>
                     <li>Enable [TOCM], Search Replace, Code fold</li>
                 </ul>            
-            </header>
+            </header> -->
+            <a href="" class="download-md" style="display: none;"></a>
+            <input type="file" id="md-file" style="display: none;">
             <div class="btns">
                 <button id="goto-line-btn">Goto line 90</button>
                 <button id="show-btn">Show editor</button>
@@ -118,6 +40,8 @@
                 <button id="toc-default-btn">ToC default</button>
                 <button id="default-theme">Default Theme</button>
                 <button id="dark-theme">Dark Theme</button>
+                <button id="download-md">Download MarkDown File</button>
+                <button id="open-md-file">Open Md File</button>
             </div>
             <div id="test-editormd"></div>
         </div>
@@ -131,7 +55,7 @@
                 $.get('test.md', function(md){
                     testEditor = editormd("test-editormd", {
                         width: "90%",
-                        height: 740,
+                        height: 700,
                         path : '../lib/',
                         theme : "dark",
                         previewTheme : "dark",
@@ -237,6 +161,41 @@
                     testEditor.setEditorTheme('pastel-on-dark');
                     testEditor.setPreviewTheme('dark');
                 });
+
+                $('#download-md').click(function() {
+                    var mdText = testEditor.markdownTextarea.text();
+                    var blob = new Blob(
+                        [mdText], 
+                        {type: "text/plain;charset=" + document.characterSet}
+                    );
+                    var url = window.URL.createObjectURL(blob);
+                    var download_link = $('.download-md')[0];
+                    download_link.href = url;
+                    download_link.download = window.prompt('请输入文件名，包含扩展类型！');
+                    download_link.click();
+                    window.URL.revokeObjectURL(url);
+                });
+
+                let mdinput = document.querySelector('#md-file');
+                document.querySelector('#open-md-file').onclick = function() {
+                    mdinput.click();
+                };
+
+                mdinput.onchange = function(e) {
+                    let logStyle = 'color: red;font-size:16px;',
+                    reader = new FileReader(),
+                    text = null;
+                    reader.onloadstart = function() {
+                        console.log('%c Start load Md file content', logStyle);
+                    }
+                    reader.onloadend = function() {
+                        console.log('%c load Md file content ended', logStyle);
+                    }
+                    reader.onload = function(e) {
+                        testEditor.setValue(e.target.result);
+                    }
+                    reader.readAsText(mdinput.files[0]);
+                }
             });
         </script>
     </body>
